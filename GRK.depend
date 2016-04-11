@@ -1,0 +1,23 @@
+# depslib dependency file v1.0
+1459760490 source:/home/students/s372185/Programming/GRK/main.cpp
+	<GL/glew.h>
+	<GL/glut.h>
+	"include/Shader_Loader.h"
+	<string.h>
+	<iostream>
+
+1459757110 /home/students/s372185/Programming/GRK/include/Shader_Loader.h
+	<GL/glew.h>
+	<GL/glut.h>
+	<iostream>
+
+1459757124 source:/home/students/s372185/Programming/GRK/src/Shader_Loader.cpp
+	"../include/Shader_Loader.h"
+	<iostream>
+	<fstream>
+	<vector>
+
+1459757848 /home/students/s372185/Programming/GRK/src/data.cpp
+
+1459757848 source:/home/students/s372185/Programming/GRK/src/data.cpp
+
