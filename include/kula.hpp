@@ -1,3 +1,7 @@
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include "SOIL.h"
+
 #define BUFFER_OFFSET(offset) ((void*)(offset))
 
 
