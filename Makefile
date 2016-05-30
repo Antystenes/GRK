@@ -3,13 +3,13 @@ TARGET   = $(BIN_DIR)/$(EXECUTABLE)
 #The compiler that we will be using
 CXX ?= gcc
 #C++ compilation flags
-CXXFLAGS = $(INCLUDES) -Wall
+CXXFLAGS = $(INCLUDES) -Wall -std=c++11
 #Directories for compiler to look for files
 INCLUDES = -I./include
 #Debug flags
 DEBUG = -g
 #Linker flags
-LDFLAGS = -lGL -lGLEW -lGLU -lglut
+LDFLAGS = -lGL -lGLEW -lGLU -lglut -L./soil
 #Optimization flags
 OPTIMIZE = -O2
 #Folder where binary will be stored.
