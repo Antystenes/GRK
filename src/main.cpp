@@ -5,8 +5,9 @@
 #include <string.h>
 #include <iostream>
 #include <vector>
+#include "kula.hpp"
 
-std::vector<float> kula;
+//std::vector<float> kula;
 
 GLuint program, vbo, vao, perspectiveMatrixUnif, modelToCameraMatrixU, lightU;
 const float fFrustumScale = 1.0;
@@ -40,33 +41,6 @@ void reshape(int w, int h)
 
 void Init()
 {
-    for (int i = 0; i <= 40; i++)
-    {
-        float lat0 = 3.14159265359 * (-0.5 + (float)(i - 1) / 40);
-        float z0 = sin(lat0);
-        float zr0 = cos(lat0);
-
-        float lat1 = 3.14159265359 * (-0.5 + (float)i / 40);
-        float z1 = sin(lat1);
-        float zr1 = cos(lat1);
-
-        for (int j = 0; j <= 40; j++)
-        {
-            float lng = 2 * 3.14159265359 * (float)(j - 1) / 40;
-            float x = cos(lng);
-            float y = sin(lng);
-
-            kula.push_back(x * zr0);
-            kula.push_back(y * zr0);
-            kula.push_back(z0);
-            kula.push_back(1.0f);
-
-            kula.push_back(x * zr1);
-            kula.push_back(y * zr1);
-            kula.push_back(z1);
-            kula.push_back(1.0f);
-        }
-    }
     light[0] = 10.0f;
     light[1] = 10.0f;
     light[2] = 10.0f;
@@ -107,15 +81,18 @@ void Init()
     modelToCameraMatrix[14]=-0.5f;
     glUniformMatrix4fv(modelToCameraMatrixU, 1, GL_FALSE, modelToCameraMatrix);
 
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER,
-                 3200 * 4 * 7,
-                 kula.data(),
-                 GL_STREAM_DRAW);
+    //    glGenBuffers(1, &vbo);
+    //glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    //glBufferData(GL_ARRAY_BUFFER,
+    //             3200 * 4 * 7,
+    //             kula.data(),
+    //             GL_STREAM_DRAW);
 
-    glGenVertexArrays(0, &vao);
-    glBindVertexArray(vao);
+    //glGenVertexArrays(0, &vao);
+    //glBindVertexArray(vao);
+
+    vao = SolidSphere(1.0f, 10, 10);
+
 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
