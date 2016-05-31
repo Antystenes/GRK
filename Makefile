@@ -9,7 +9,7 @@ INCLUDES = -I./include
 #Debug flags
 DEBUG = -g
 #Linker flags
-LDFLAGS = -lGL -lGLEW -lGLU -lglut -L./soil
+LDFLAGS =  -lGL -lGLEW -lGLU -lglut
 #Optimization flags
 OPTIMIZE = -O2
 #Folder where binary will be stored.
