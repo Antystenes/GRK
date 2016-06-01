@@ -5,5 +5,6 @@ in vec4 vNormal;
 in vec4 vL;
 void main(void)
 {
-color = 1.5 * vec4(0.0f, 1.0f, 0.0f, 1.0f) * max (dot(vNormal, vL),0);
+color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+// * max (dot(vNormal, vL),0);
 }
