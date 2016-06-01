@@ -23,35 +23,51 @@ namespace Graphics
     glutCreateWindow(name);
   }
 
+  struct Vertex
+  {
+    float x;
+    float y;
+    float z;
+
+    Vertex(float fx, float fy, float fz) : x(fx), y(fy), z(fz) {};
+    ~Vertex() = default;
+  };
+
   class Drawable
   {
   private:
-    const float* m_vertexData;
+    std::vector<Vertex> m_vertexData;
     GLuint m_vbo, m_vao;
   public:
     Drawable() = delete;
-    Drawable(const float* v);
+    Drawable(std::vector<Vertex>);
     ~Drawable() = default;
     void Draw();
+    void Translate(float, float, float);
   };
 
-  Drawable::Drawable(const float* v)
+  Drawable::Drawable(std::vector<Vertex> v)
   {
     m_vertexData = v;
     glGenBuffers(1, &m_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float)*3*4, m_vertexData, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, m_vertexData.size() * sizeof(Vertex), &m_vertexData[0], GL_STATIC_DRAW);
 
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
   }
 
   void Drawable::Draw()
   {
     glBindVertexArray(m_vao);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 0, m_vertexData.size());
+  }
+
+  void Drawable::Translate(float x, float y, float z)
+  {
+    
   }
 
   class Drawer //pun intended xd
@@ -62,10 +78,10 @@ namespace Graphics
   public:
     static void Init();
     static void Draw();
-    static void AddDrawable(const float*);
+    static void AddDrawable(std::vector<Vertex>);
   };
 
-  void Drawer::AddDrawable(const float* v)
+  void Drawer::AddDrawable(std::vector<Vertex> v)
   {
     drawable.push_back(new Drawable(v));
   }
@@ -109,9 +125,9 @@ System::System(int argc, char **argv)
   m_window.Init();
   glewInit();
   Graphics::Drawer::Init();
-  float trojkat[] = {-0.2f, 0.0f, -1.0f, 1.0f,
-                     -0.2f, 0.2f, -1.0f, 1.0f,
-                     0.2f,  0.2f, -1.0f, 1.0f};
+  std::vector<Graphics::Vertex> trojkat = {Graphics::Vertex(-0.2f, 0.0f, -1.0f),
+                                           Graphics::Vertex(-0.2f, 0.2f, -1.0f),
+                                           Graphics::Vertex(0.2f,  0.2f, -1.0f)};
   Graphics::Drawer::AddDrawable(trojkat);
   glutDisplayFunc(Graphics::Drawer::Draw);
   glutMainLoop();
