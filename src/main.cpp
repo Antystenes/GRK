@@ -1,27 +1,27 @@
 #include "myShader.hpp"
 #include <vector>
 #include <GL/glut.h>
+#include "configuration.hpp"
 
-namespace Graphics
-{
-  class Window
-  {
-  private:
-    int width, height;
-    const char* name;
-  public:
-    Window() : width(1280), height(720), name("Yolo") {};
-    ~Window() = default;
-    void Init();
-  };
+    class Window
+    {
+    private:
+        int width, height;
+        const char* name;
+    public:
+        Window() : width(1280), height(720), name("Yolo") {};
+        ~Window() = default;
+        void Init();
+    };
 
-  void Window::Init()
-  {
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowPosition(0,0);
-    glutInitWindowSize(width, height);
-    glutCreateWindow(name);
-  }
+    void Window::Init()
+    {
+        Configuration::Get().Init();
+        glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+        glutInitWindowPosition(0,0);
+        glutInitWindowSize(width, height);
+        glutCreateWindow(name);
+    }
 
   struct Vertex
   {
@@ -67,10 +67,10 @@ namespace Graphics
 
   void Drawable::Translate(float x, float y, float z)
   {
-    
+
   }
 
-  class Drawer //pun intended xd
+  class Drawer //pun intended CD
   {
   private:
     static std::vector <Drawable*> drawable;
@@ -89,7 +89,8 @@ namespace Graphics
   void Drawer::Init()
   {
     glEnable(GL_DEPTH_TEST);
-    shaders = LoadShader("shaders/Vertex_Shader.glsl", "shaders/Fragment_Shader.glsl");
+    shaders = LoadShader(Configuration::Get().GetElement("vertex_path").c_str(),
+                         Configuration::Get().GetElement("fragment_path").c_str());
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
   }
 
@@ -107,35 +108,32 @@ namespace Graphics
   GLuint Drawer::shaders = 0;
   std::vector <Drawable*> Drawer::drawable;
 
-}
-
 class System
 {
 private:
-  Graphics::Window m_window;
+    Window m_window;
 public:
-  System(int, char **);
-  ~System() = default;
+    System(int, char **);
+    ~System() = default;
 };
 
 System::System(int argc, char **argv)
 {
   glutInit(&argc, argv);
-  Graphics::Window m_window;
+  Window m_window;
   m_window.Init();
   glewInit();
-  Graphics::Drawer::Init();
-  std::vector<Graphics::Vertex> trojkat = {Graphics::Vertex(-0.2f, 0.0f, -1.0f),
-                                           Graphics::Vertex(-0.2f, 0.2f, -1.0f),
-                                           Graphics::Vertex(0.2f,  0.2f, -1.0f)};
-  Graphics::Drawer::AddDrawable(trojkat);
-  glutDisplayFunc(Graphics::Drawer::Draw);
+  Drawer::Init();
+  std::vector<Vertex> trojkat = {Vertex(-0.2f, 0.0f, -1.0f),
+                                           Vertex(-0.2f, 0.2f, -1.0f),
+                                           Vertex(0.2f,  0.2f, -1.0f)};
+  Drawer::AddDrawable(trojkat);
+  glutDisplayFunc(Drawer::Draw);
   glutMainLoop();
 }
 
-
 int main(int argc, char **argv)
 {
-  System system(argc, argv);
-  return 0;
+    System system(argc, argv);
+    return 0;
 }
