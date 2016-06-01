@@ -7,8 +7,7 @@
 #include <string>
 #include <iterator>
 
-
-#define CONFIG_FILE_PATH "config.json"
+#define CONFIG_FILE_PATH "gothic.ini"
 
 using json = picojson::value;
 
