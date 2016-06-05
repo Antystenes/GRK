@@ -96,8 +96,8 @@ void Drawer::Init()
 
 void Drawer::Draw()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(shaders);
     for(auto &i : drawable)
     {
@@ -111,7 +111,9 @@ std::vector <Drawable*> Drawer::drawable;
 class System
 {
 private:
-    Window m_window;
+   Window m_window;
+   static void Keyboard(unsigned char, int, int);
+
 public:
     System(int, char**);
     ~System() = default;
@@ -129,7 +131,19 @@ System::System(int argc, char** argv)
                                    Vertex(0.2f,  0.2f, -1.0f)};
     Drawer::AddDrawable(trojkat);
     glutDisplayFunc(Drawer::Draw);
+    glutKeyboardFunc(Keyboard);
     glutMainLoop();
+}
+
+void System::Keyboard(unsigned char key, int x, int y)
+{
+   switch(key)
+   {
+      case 27:
+      case 'q':
+         glutDestroyWindow(1);
+      break;
+   }
 }
 
 int main(int argc, char** argv)
