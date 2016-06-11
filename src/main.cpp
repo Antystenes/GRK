@@ -61,6 +61,7 @@ Model::Model(std::vector<Vertex> v)
 void Model::Draw()
 {
 
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBindVertexArray(m_vao);
     glDrawArrays(GL_TRIANGLES, 0, m_vertexData.size());
 }
@@ -71,45 +72,60 @@ private:
     Model* m_model;
 		float m_transformation[16];
 		GLuint m_transformationUniform;
+    GLuint m_shader;
 public:
 		Drawable() = delete;
-		Drawable(Model*, GLuint);
+		Drawable(Model*, GLuint,float, float, float);
 		~Drawable() = default;
-		void Translate(int x, int y, int z);
+		void Translate(float x, float y, float z);
 		void Draw();
 };
 
-Drawable::Drawable(Model* model, GLuint shader)
+Drawable::Drawable(Model* model, GLuint shader,float x, float y, float z)
 {
+    m_shader = shader;
 		m_model = model;
 		m_transformation[0] = m_transformation[5] = m_transformation[10] = m_transformation[15] = 1;
+		m_transformation[12]+= x;
+		m_transformation[13]+= y;
+		m_transformation[14]+= z;
 	  m_transformationUniform = glGetUniformLocation(shader, "transformation");
 }
 
 void Drawable::Draw()
 {
-		glUniformMatrix4fv(m_transformationUniform, 1, true, m_transformation);
+    glUseProgram(m_shader);
+		glUniformMatrix4fv(m_transformationUniform, 1, GL_FALSE, m_transformation);
 		m_model->Draw();
 }
 
-void Drawable::Translate(int x, int y, int z)
+void Drawable::Translate(float x, float y, float z)
 {
-		m_transformation[3]+= x;
-		m_transformation[7]+= y;
-		m_transformation[11]+=z;
+		m_transformation[12]+= x;
+		m_transformation[13]+= y;
+		m_transformation[14]+= z;
 }
 
 class Drawer //pun intended CD
 {
 private:
     static std::vector <Model*> model;
+    static std::vector <Drawable*> drawable;
     static GLuint shaders;
 public:
     static void Init();
     static void Draw();
     static void AddModel(std::vector<Vertex>);
+    static void AddDrawable(int i, float x=0, float y=0, float z=0);
+    static Drawable* GetDrawable(int i) { return drawable[i];}
     static Model* GetModel(int i) { return model[i];};
 		static GLuint GetShaders() { return shaders;};
+};
+
+
+void Drawer::AddDrawable(int i, float x, float y, float z)
+{
+    drawable.push_back(new Drawable(model[i], shaders,x,y,z));
 };
 
 void Drawer::AddModel(std::vector<Vertex> v)
@@ -129,8 +145,7 @@ void Drawer::Draw()
 {
     glClearColor(1.0f, 0.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glUseProgram(shaders);
-    for(auto &i : model)
+    for(auto &i : drawable)
     {
         i->Draw();
     }
@@ -138,6 +153,7 @@ void Drawer::Draw()
 }
 GLuint Drawer::shaders = 0;
 std::vector <Model*> Drawer::model;
+std::vector <Drawable*> Drawer::drawable;
 
 class System
 {
@@ -161,6 +177,13 @@ System::System(int argc, char** argv)
                                    Vertex(-0.2f, 0.2f, -1.0f),
                                    Vertex(0.2f,  0.2f, -1.0f)};
     Drawer::AddModel(trojkat);
+//    Drawer::AddModel(trojkat);
+    Drawer::AddDrawable(0, 0, 0 ,0);
+    Drawer::AddDrawable(0,-0.3, -0.3, 0.0);
+    Drawer::AddDrawable(0, 0.3, 0.3, 0.0);
+//    Drawer::GetDrawable(0)->Translate(0.0, 0.0, 0.0);
+    Drawer::GetDrawable(1)->Translate(-0.3, -0.3, 0.0);
+//    Drawer::GetDrawable(2)->Translate(0.0f, -0.3f, 0.0f);
     glutDisplayFunc(Drawer::Draw);
     glutKeyboardFunc(Keyboard);
     glutMainLoop();
