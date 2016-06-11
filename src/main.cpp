@@ -1,4 +1,6 @@
 #include "myShader.hpp"
+#include <iostream>
+#include <string.h>
 #include <vector>
 #include <GL/glut.h>
 #include "configuration.hpp"
@@ -83,6 +85,7 @@ public:
 
 Drawable::Drawable(Model* model, GLuint shader,float x, float y, float z)
 {
+    memset(m_transformation, 0, 16);
     m_shader = shader;
 		m_model = model;
 		m_transformation[0] = m_transformation[5] = m_transformation[10] = m_transformation[15] = 1;
@@ -94,7 +97,6 @@ Drawable::Drawable(Model* model, GLuint shader,float x, float y, float z)
 
 void Drawable::Draw()
 {
-    glUseProgram(m_shader);
 		glUniformMatrix4fv(m_transformationUniform, 1, GL_FALSE, m_transformation);
 		m_model->Draw();
 }
@@ -111,12 +113,14 @@ class Drawer //pun intended CD
 private:
     static std::vector <Model*> model;
     static std::vector <Drawable*> drawable;
-    static GLuint shaders;
+    static GLuint shaders, cameraUniform;
+    static float camera[16];
 public:
     static void Init();
     static void Draw();
     static void AddModel(std::vector<Vertex>);
     static void AddDrawable(int i, float x=0, float y=0, float z=0);
+    static void MoveCamera(float x, float y, float z);
     static Drawable* GetDrawable(int i) { return drawable[i];}
     static Model* GetModel(int i) { return model[i];};
 		static GLuint GetShaders() { return shaders;};
@@ -139,6 +143,18 @@ void Drawer::Init()
     shaders = LoadShader(Configuration::Get().GetElement("vertex_path").c_str(),
                          Configuration::Get().GetElement("fragment_path").c_str());
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glUseProgram(shaders);
+	  cameraUniform = glGetUniformLocation(shaders, "camera");
+		glUniformMatrix4fv(cameraUniform, 1, GL_FALSE, camera);
+}
+
+void Drawer::MoveCamera(float x, float y, float z)
+{
+    camera[12]-=x;
+    camera[13]-=y;
+    camera[14]-=z;
+    glUseProgram(shaders);
+		glUniformMatrix4fv(cameraUniform, 1, GL_FALSE, camera);
 }
 
 void Drawer::Draw()
@@ -150,10 +166,15 @@ void Drawer::Draw()
         i->Draw();
     }
     glutSwapBuffers();
+    glutPostRedisplay();
 }
-GLuint Drawer::shaders = 0;
+GLuint Drawer::shaders, Drawer::cameraUniform = 0;
 std::vector <Model*> Drawer::model;
 std::vector <Drawable*> Drawer::drawable;
+float Drawer::camera[] = {1.0, 0.0, 0.0, 0.0,
+                          0.0, 1.0, 0.0, 0.0,
+                          0.0, 0.0, 1.0, 0.0,
+                          0.0, 0.0, 0.0, 1.0};
 
 class System
 {
@@ -177,13 +198,12 @@ System::System(int argc, char** argv)
                                    Vertex(-0.2f, 0.2f, -1.0f),
                                    Vertex(0.2f,  0.2f, -1.0f)};
     Drawer::AddModel(trojkat);
-//    Drawer::AddModel(trojkat);
     Drawer::AddDrawable(0, 0, 0 ,0);
     Drawer::AddDrawable(0,-0.3, -0.3, 0.0);
     Drawer::AddDrawable(0, 0.3, 0.3, 0.0);
-//    Drawer::GetDrawable(0)->Translate(0.0, 0.0, 0.0);
+    Drawer::GetDrawable(0)->Translate(0.0, 0.0, 0.0);
     Drawer::GetDrawable(1)->Translate(-0.3, -0.3, 0.0);
-//    Drawer::GetDrawable(2)->Translate(0.0f, -0.3f, 0.0f);
+    Drawer::GetDrawable(2)->Translate(0.0f, -0.3f, 0.0f);
     glutDisplayFunc(Drawer::Draw);
     glutKeyboardFunc(Keyboard);
     glutMainLoop();
@@ -193,12 +213,34 @@ void System::Keyboard(unsigned char key, int x, int y)
 {
    switch(key)
    {
-      case 27:
-      case 'q':
-         glutDestroyWindow(1);
-         break;
-      case 'w':
-         break;
+   case 27:
+   case 'q':
+       glutDestroyWindow(1);
+       break;
+   case 'w':
+       Drawer::MoveCamera(0.0, 0.1, 0.0);
+       break;
+   case 's':
+       Drawer::MoveCamera(0.0,-0.1, 0.0);
+       break;
+   case 'a':
+       Drawer::MoveCamera(-0.1, 0.0, 0.0);
+       break;
+   case 'd':
+       Drawer::MoveCamera( 0.1, 0.0, 0.0);
+       break;
+   case 'i':
+       Drawer::GetDrawable(1)->Translate(0.0, 0.02, 0.0);
+       break;
+   case 'k':
+       Drawer::GetDrawable(1)->Translate(0.0,-0.02, 0.0);
+       break;
+   case 'j':
+       Drawer::GetDrawable(1)->Translate(-0.02, 0.0, 0.0);
+       break;
+   case 'l':
+       Drawer::GetDrawable(1)->Translate( 0.02, 0.0, 0.0);
+       break;
    }
 }
 
