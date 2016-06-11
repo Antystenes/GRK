@@ -13,7 +13,7 @@
 
 out vec4 color;
 in vec4 Position;
-in uniform sampler2D LightMap;
+uniform sampler2D LightMap;
 uniform sampler2D GroundMap;
 in uniform float Timer;
 in vec2 texcoord;
@@ -49,6 +49,13 @@ vec3 line_plane_intercept(vec3 lineP, vec3 lineN, vec3 planeN, float planeD)
 
 void main(void)
 {
-    //vec2 dxdy = gradwave()
-    color = texture(GroundMap, texcoord).rgba;
+    vec2 dxdy = gradwave(Position.x, Position.y, Timer);
+
+    vec3 intercept = line_plane_intercept(Position.xyz, vec3(dxdy, clamp(Position.w, 0.0, 1.0)), vec3(0,0,1), -0.8);
+
+    color.rgb = vec3(texture(LightMap, intercept.xy * 0.8));
+    color.rgb += vec3(texture(GroundMap, Position.xy));
+    color.a = 1;
+
+    //color = texture(GroundMap, texcoord).rgba;
 }
