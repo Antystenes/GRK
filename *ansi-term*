@@ -1,0 +1,126 @@
+[morgoth@localhost src]$ ls
+main.cpp  myShader.cpp
+[morgoth@localhost src]$ cd ..
+[morgoth@localhost GRK]$ make
+mkdir -p obj
+g++ -I./include -Wall -std=c++11 -O2 -c src/main.cpp -o obj/main.o
+src/main.cpp: In static member function ‘static void Drawer::Init()’:
+src/main.cpp:206:47: error: ‘program’ was not declared in this scope
+     perspectiveUniform = glGetUniformLocation(program,"perspective");
+                                               ^
+src/main.cpp:209:5: error: ‘perspectiveMatrix’ was not declared in this scope
+     perspectiveMatrix[0] = 1.0;
+     ^
+src/main.cpp: At global scope:
+src/main.cpp:250:1: error: expected ‘,’ or ‘;’ before ‘class’
+ class System
+ ^
+src/main.cpp:261:1: error: ‘System’ does not name a type
+ System::System(int argc, char** argv)
+ ^
+src/main.cpp:292:6: error: ‘System’ has not been declared
+ void System::Keyboard(unsigned char key, int x, int y)
+      ^
+src/main.cpp: In function ‘int main(int, char**)’:
+src/main.cpp:335:5: error: ‘System’ was not declared in this scope
+     System system(argc, argv);
+     ^
+Makefile:52: polecenia dla obiektu 'obj/main.o' nie powiodły się
+make: *** [obj/main.o] Błąd 1
+[morgoth@localhost GRK]$ make
+mkdir -p obj
+g++ -I./include -Wall -std=c++11 -O2 -c src/main.cpp -o obj/main.o
+src/main.cpp: In static member function ‘static void Drawer::Init()’:
+src/main.cpp:209:5: error: ‘perspectiveMatrix’ was not declared in this scope
+     perspectiveMatrix[0] = 1.0;
+     ^
+src/main.cpp: At global scope:
+src/main.cpp:250:1: error: expected ‘,’ or ‘;’ before ‘class’
+ class System
+ ^
+src/main.cpp:261:1: error: ‘System’ does not name a type
+ System::System(int argc, char** argv)
+ ^
+src/main.cpp:292:6: error: ‘System’ has not been declared
+ void System::Keyboard(unsigned char key, int x, int y)
+      ^
+src/main.cpp: In function ‘int main(int, char**)’:
+src/main.cpp:335:5: error: ‘System’ was not declared in this scope
+     System system(argc, argv);
+     ^
+Makefile:52: polecenia dla obiektu 'obj/main.o' nie powiodły się
+make: *** [obj/main.o] Błąd 1
+[morgoth@localhost GRK]$ make
+mkdir -p obj
+g++ -I./include -Wall -std=c++11 -O2 -c src/main.cpp -o obj/main.o
+src/main.cpp:250:1: error: expected ‘,’ or ‘;’ before ‘class’
+ class System
+ ^
+src/main.cpp:261:1: error: ‘System’ does not name a type
+ System::System(int argc, char** argv)
+ ^
+src/main.cpp:292:6: error: ‘System’ has not been declared
+ void System::Keyboard(unsigned char key, int x, int y)
+      ^
+src/main.cpp: In function ‘int main(int, char**)’:
+src/main.cpp:335:5: error: ‘System’ was not declared in this scope
+     System system(argc, argv);
+     ^
+Makefile:52: polecenia dla obiektu 'obj/main.o' nie powiodły się
+make: *** [obj/main.o] Błąd 1
+[morgoth@localhost GRK]$ make
+mkdir -p obj
+g++ -I./include -Wall -std=c++11 -O2 -c src/main.cpp -o obj/main.o
+mkdir -p bin
+g++ obj/main.o obj/myShader.o -lIL -lILU -lILUT -lGL -lGLEW -lGLU -lglut -o bin/grk
+obj/main.o: In function `Drawer::Init()':
+main.cpp:(.text+0x1796): undefined reference to `Drawer::perspectiveUniform'
+collect2: error: ld returned 1 exit status
+Makefile:45: polecenia dla obiektu 'bin/grk' nie powiodły się
+make: *** [bin/grk] Błąd 1
+[morgoth@localhost GRK]$ make
+mkdir -p obj
+g++ -I./include -Wall -std=c++11 -O2 -c src/main.cpp -o obj/main.o
+mkdir -p bin
+g++ obj/main.o obj/myShader.o -lIL -lILU -lILUT -lGL -lGLEW -lGLU -lglut -o bin/grk
+[morgoth@localhost GRK]$ bin/grk 
+
+Compiling fragment shader.
+
+Linking program
+
+[morgoth@localhost GRK]$ bin/grk 
+
+Compiling fragment shader.
+
+Linking program
+
+[morgoth@localhost GRK]$ bin/grk 
+
+Compiling fragment shader.
+
+Linking program
+
+[morgoth@localhost GRK]$ make
+mkdir -p obj
+g++ -I./include -Wall -std=c++11 -O2 -c src/main.cpp -o obj/main.o
+mkdir -p bin
+g++ obj/main.o obj/myShader.o -lIL -lILU -lILUT -lGL -lGLEW -lGLU -lglut -o bin/grk
+[morgoth@localhost GRK]$ bin/grk 
+
+Compiling fragment shader.
+
+Linking program
+
+[morgoth@localhost GRK]$ bin/grk 
+
+Compiling fragment shader.
+
+Linking program
+
+[morgoth@localhost GRK]$ ls
+*ansi-term*  bin  gothic.ini  include  Makefile  media  obj  shaders  src  woda_skan1.PDF
+[morgoth@localhost GRK]$ rm \*ansi-term\* 
+[morgoth@localhost GRK]$ ls
+bin  gothic.ini  include  Makefile  media  obj  shaders  src  woda_skan1.PDF
+[morgoth@localhost GRK]$ 

@@ -164,8 +164,8 @@ class Drawer //pun intended CD
 private:
     static std::vector <Model*> model;
     static std::vector <Drawable*> drawable;
-    static GLuint shaders, cameraUniform;
-    static float camera[16];
+    static GLuint shaders, cameraUniform, perspectiveUniform;
+    static float camera[16], perspective[16];
 public:
     static void Init();
     static void Draw();
@@ -191,12 +191,27 @@ void Drawer::AddModel(std::vector<Vertex> v)
 void Drawer::Init()
 {
     glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LEQUAL);
+    glDepthRange(0.0f, 1.0f);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CW);
     shaders = LoadShader(Configuration::Get().GetElement("vertex_path").c_str(),
                          Configuration::Get().GetElement("fragment_path").c_str());
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glUseProgram(shaders);
     cameraUniform = glGetUniformLocation(shaders, "camera");
     glUniformMatrix4fv(cameraUniform, 1, GL_FALSE, camera);
+    perspectiveUniform = glGetUniformLocation(shaders,"perspective");
+    float fzNear = 0.1f;
+    float fzFar = 30.0f;
+    perspective[0] = 1.0;
+    perspective[5] = 1.0;
+    perspective[10] = (fzFar + fzNear) / (fzNear-fzFar);
+    perspective[14] = (2 * fzFar * fzNear) / (fzNear-fzFar);
+    perspective[11] = -1.0f;
+    glUniformMatrix4fv(perspectiveUniform, 1, GL_FALSE, perspective);
 }
 
 void Drawer::MoveCamera(float x, float y, float z)
@@ -219,13 +234,18 @@ void Drawer::Draw()
     glutSwapBuffers();
     glutPostRedisplay();
 }
-GLuint Drawer::shaders, Drawer::cameraUniform = 0;
+GLuint Drawer::shaders, Drawer::cameraUniform, Drawer::perspectiveUniform = 0;
 std::vector <Model*> Drawer::model;
 std::vector <Drawable*> Drawer::drawable;
 float Drawer::camera[] = {1.0, 0.0, 0.0, 0.0,
                           0.0, 1.0, 0.0, 0.0,
                           0.0, 0.0, 1.0, 0.0,
                           0.0, 0.0, 0.0, 1.0};
+float Drawer::perspective[] = {0.0, 0.0, 0.0, 0.0,
+                               0.0, 0.0, 0.0, 0.0,
+                               0.0, 0.0, 0.0, 0.0,
+                               0.0, 0.0, 0.0, 0.0};
+
 
 class System
 {
@@ -259,8 +279,8 @@ System::System(int argc, char** argv)
                                    Vertex(-0.05f, 0.4f, 0.0f,0.25f, 1.0f),
                                    Vertex( 0.0f, 0.3f, 0.0f, 0.5f, 0.75f),
                                    Vertex( 0.1f, 0.3f, 0.0f, 1.0f, 0.75f),
-                                   Vertex( 0.05f, 0.4f, 0.0f, 0.75f, 1.0f),
                                    Vertex( 0.0f, 0.3f, 0.0f, 0.5f, 0.75f),
+                                   Vertex( 0.05f, 0.4f, 0.0f, 0.75f, 1.0f)
     };
     Drawer::AddModel(trojkat);
     Drawer::AddDrawable(0, 0, 0 ,0);
@@ -288,6 +308,12 @@ void System::Keyboard(unsigned char key, int x, int y)
        break;
    case 'd':
        Drawer::MoveCamera( 0.1, 0.0, 0.0);
+       break;
+   case 'z':
+       Drawer::MoveCamera(0.0, 0.0, 0.1);
+       break;
+   case 'x':
+       Drawer::MoveCamera(0.0, 0.0,-0.1);
        break;
    case 'i':
        Drawer::GetDrawable(0)->Translate(0.0, 0.02, 0.0);
