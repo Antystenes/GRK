@@ -1,15 +1,14 @@
 #version 430 core
 
 layout(location = 0) in vec3 position;
+layout(location = 1) in vec2 tex;
 
 uniform mat4 transformation;
 uniform mat4 camera;
+out vec2 texcoord;
 
 void main(void)
 {
-//vL = normalize (position - light);
-//mat4 normalMatrix = transpose(inverse(modelToCameraMatrix));
-//vNormal = normalize(normalMatrix * position);
-
-gl_Position = /*perspectiveMatrix */ camera * transformation * vec4(position, 1);
+texcoord = tex;
+gl_Position =  camera * transformation * vec4(position, 1);
 }

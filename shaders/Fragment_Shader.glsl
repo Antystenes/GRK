@@ -1,10 +1,12 @@
 #version 430 core
 
-out vec4 color;
+out vec3 color;
+in vec2 texcoord;
+uniform sampler2D text;
 //in vec4 vNormal;
 //in vec4 vL;
 void main(void)
 {
-color = vec4(0.0f, 1.0f, 0.0f, 1.0f);
+color = texture(text, texcoord).rgb;
 // * max (dot(vNormal, vL),0);
 }
