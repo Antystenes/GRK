@@ -32,9 +32,6 @@ void Drawer::Init()
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LEQUAL);
     glDepthRange(0.0f, 1.0f);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CW);
     shaders = LoadShader(Configuration::Get().GetElement("vertex_path").c_str(),
                          Configuration::Get().GetElement("fragment_path").c_str());
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

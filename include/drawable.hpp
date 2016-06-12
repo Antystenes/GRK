@@ -2,7 +2,7 @@
 #define DRAWABLE_HPP
 
 #include "model.hpp"
-
+#include <glm/glm.hpp>
 #include <cstring> //memset
 
 class Drawable
@@ -10,7 +10,7 @@ class Drawable
 private:
     GLuint m_shader;
     Model* m_model;
-    float m_transformation[16];
+    glm::mat4 m_transformation;
     GLuint m_transformationUniform;
 
 public:
