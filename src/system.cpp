@@ -19,28 +19,7 @@ System::System(int argc, char** argv)
     iluInit();
     ilutInit();
     ilutRenderer(ILUT_OPENGL);
-    std::vector<Vertex> trojkat = {Vertex( 0.0f, 0.0f, 0.0f, 0.5f, 0.0f),
-                                   Vertex(-0.1f, 0.3f, 0.0f, 0.0f, 0.75f),
-                                   Vertex( 0.0f, 0.3f, 0.0f, 0.5f, 0.75f),
-                                   Vertex( 0.0f, 0.0f, 0.0f, 0.5f, 0.0f),
-                                   Vertex( 0.0f, 0.3f, 0.0f, 0.5f, 0.75f),
-                                   Vertex( 0.1f, 0.3f, 0.0f, 1.0f, 0.75f),
-                                   Vertex(-0.1f, 0.3f, 0.0f, 0.0f, 0.75f),
-                                   Vertex(-0.05f, 0.4f, 0.0f,0.25f, 1.0f),
-                                   Vertex( 0.0f, 0.3f, 0.0f, 0.5f, 0.75f),
-                                   Vertex( 0.1f, 0.3f, 0.0f, 1.0f, 0.75f),
-                                   Vertex( 0.0f, 0.3f, 0.0f, 0.5f, 0.75f),
-                                   Vertex( 0.05f, 0.4f, 0.0f, 0.75f, 1.0f)
-    };
-    Drawer::AddModel(trojkat, "media/DRAGON.BMP");
-    std::vector<Vertex> tile = {Vertex( 0.0f, 0.0f, 0.0f, 0.0f, 1.0f),
-                                Vertex( 0.5f, 0.0f, 0.0f, 1.0f, 1.0f),
-                                Vertex( 0.5f, 0.0f, 0.5f, 1.0f, 0.0f),
-                                Vertex( 0.5f, 0.0f, 0.5f, 1.0f, 0.0f),
-                                Vertex( 0.0f, 0.0f, 0.5f, 0.0f, 0.0f),
-                                Vertex( 0.0f, 0.0f, 0.0f, 0.0f, 1.0f)};
-    Drawer::AddModel(tile, "media/Ocean Floor.jpg");
-    Drawer::AddDrawable(0, 0, 0 ,-2);
+    Drawer::AddModel("media/tubarao1.obj", "media/DRAGON.BMP");
     for(int i = -10; i<10; i++)
         for(int j = -10; j<10; j++)
             Drawer::AddDrawable(1, 0.5*j, -1, 0.5*i);

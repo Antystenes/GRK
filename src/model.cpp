@@ -1,5 +1,5 @@
 #include "model.hpp"
-
+#include "objloader.hpp"
 #include "myShader.hpp"
 
 #include <IL/il.h>
@@ -38,20 +38,31 @@ GLuint Model::LoadImage(std::string filename)
     return textureID;
 }
 
-Model::Model(std::vector<Vertex> v, GLuint shader, const char* filename)
+Model::Model(std::string model, GLuint shader, const char* filename)
 {
     m_shader=shader;
-    m_vertexData = v;
-    glGenBuffers(1, &m_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-    glBufferData(GL_ARRAY_BUFFER, m_vertexData.size() * sizeof(Vertex), &m_vertexData[0], GL_STREAM_DRAW);
+    OBJLoader::LoadOBJFromFile(model, m_vertexData, m_uvData, m_normalData);
+    glGenBuffers(1, &m_vboVertex);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vboVertex);
+    glBufferData(GL_ARRAY_BUFFER, m_vertexData.size() * sizeof(glm::vec3), &m_vertexData[0], GL_STREAM_DRAW);
 
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glGenBuffers(1, &m_vboUv);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vboUv);
+    glBufferData(GL_ARRAY_BUFFER, m_uvData.size() * sizeof(glm::vec3), &m_uvData[0], GL_STREAM_DRAW);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*) (3*sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glGenBuffers(1, &m_vboNormal);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vboNormal);
+    glBufferData(GL_ARRAY_BUFFER, m_normalData.size() * sizeof(glm::vec3), &m_normalData[0], GL_STREAM_DRAW);
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
     texture = LoadImage(filename);
     texUniform = glGetUniformLocation(m_shader, "text");
 }
@@ -59,7 +70,6 @@ Model::Model(std::vector<Vertex> v, GLuint shader, const char* filename)
 void Model::Draw()
 {
 
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBindVertexArray(m_vao);
     glActiveTexture(GL_TEXTURE0);
     glUniform1i(texUniform, /*GL_TEXTURE*/0);

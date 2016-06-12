@@ -18,7 +18,6 @@ class OBJLoader
       strm >> vertex.z;
       vec.push_back(vertex);
    }
-
    static void LoadUV(std::vector<glm::vec2>& vec, std::stringstream& strm)
    {
       glm::vec2 uv;

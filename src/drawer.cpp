@@ -21,7 +21,7 @@ void Drawer::AddDrawable(int i, float x, float y, float z)
     drawable.push_back(std::move(std::unique_ptr<Drawable>(new Drawable(model[i].get(), shaders,x,y,z))));
 }
 
-void Drawer::AddModel(std::vector<Vertex> v, const char* filename)
+void Drawer::AddModel(std::string v, const char* filename)
 {
     model.push_back(std::move(std::unique_ptr<Model>(new Model(v, shaders, filename))));
 }

@@ -16,7 +16,7 @@ private:
 public:
     static void Init();
     static void Draw();
-    static void AddModel(std::vector<Vertex>, const char*);
+    static void AddModel(std::string, const char*);
     static void AddDrawable(int i, float x=0, float y=0, float z=0);
     static void MoveCamera(float x, float y, float z);
     static Drawable* GetDrawable(int i) { return drawable[i].get();}
