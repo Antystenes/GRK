@@ -7,6 +7,8 @@
 #include <vector>
 #include <GL/glut.h>
 #include "configuration.hpp"
+#include "objloader.hpp"
+
 
 class Window
 {
@@ -102,6 +104,7 @@ Model::Model(std::vector<Vertex> v, GLuint shader, const char* filename)
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*) (3*sizeof(float)));
     texture = LoadImage(filename);
     texUniform = glGetUniformLocation(m_shader, "text");
+    OBJLoader::LoadOBJ("media/tubarao1.obj");
 }
 
 void Model::Draw()
