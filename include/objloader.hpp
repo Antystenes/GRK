@@ -121,13 +121,11 @@ public:
       return true;
    }
 
-   static bool LoadOBJ(std::string filepath)
+    static bool LoadOBJ(std::string filepath, std::vector<glm::vec3> vertices)
    {
-      std::vector<glm::vec3> vertices;
       std::vector<glm::vec2> uvs;
       std::vector<glm::vec3> normal;
       bool status = LoadOBJFromFile(filepath, vertices, uvs, normal);
-      if (status) glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(glm::vec3), &vertices[0], GL_STATIC_DRAW);
       return status;
    }
 };

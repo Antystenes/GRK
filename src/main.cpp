@@ -1,20 +1,24 @@
 #include "myShader.hpp"
-#include <iostream>
+#include "configuration.hpp"
+#include "objloader.hpp"
+
 #include <IL/il.h>
 #include <IL/ilu.h>
 #include <IL/ilut.h>
+
+#include <GL/glut.h>
+
 #include <string.h>
 #include <vector>
-#include <GL/glut.h>
-#include "configuration.hpp"
-#include "objloader.hpp"
+#include <iostream>
+#include <memory>
 
 
 class Window
 {
 private:
     int width, height;
-    const char* name;
+    std::string name;
 public:
     Window() : width(1280), height(720), name("Yolo") {};
     ~Window() = default;
@@ -27,7 +31,7 @@ void Window::Init()
     glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(0,0);
     glutInitWindowSize(width, height);
-    glutCreateWindow(name);
+    glutCreateWindow(name.c_str());
 }
 
 struct Vertex
@@ -39,7 +43,8 @@ struct Vertex
     float u;
     float v;
 
-    Vertex(float fx, float fy, float fz, float fu, float fv) : x(fx), y(fy), z(fz), u(fu), v(fv) {};
+    Vertex(float fx, float fy, float fz, float fu, float fv) //TODO: Replace Vertex with builtins
+        : x(fx), y(fy), z(fz), u(fu), v(fv) {};
     ~Vertex() = default;
 };
 
@@ -53,16 +58,16 @@ public:
     Model(std::vector<Vertex>, GLuint, const char*);
     ~Model() = default;
     void Draw();
-    static GLuint LoadImage(const char*);
+    static GLuint LoadImage(std::string);
 };
 
-GLuint Model::LoadImage(const char* filename)
+GLuint Model::LoadImage(std::string filename)
 {
     ILuint imageID;
     GLuint textureID;
     ilGenImages(1, &imageID);
     ilBindImage(imageID);
-    ilLoadImage(filename);
+    ilLoadImage(filename.c_str());
     ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE);
 
     glGenTextures(1, &textureID);
@@ -104,7 +109,6 @@ Model::Model(std::vector<Vertex> v, GLuint shader, const char* filename)
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*) (3*sizeof(float)));
     texture = LoadImage(filename);
     texUniform = glGetUniformLocation(m_shader, "text");
-    OBJLoader::LoadOBJ("media/tubarao1.obj");
 }
 
 void Model::Draw()
@@ -121,10 +125,11 @@ void Model::Draw()
 class Drawable
 {
 private:
+    GLuint m_shader;
     Model* m_model;
     float m_transformation[16];
     GLuint m_transformationUniform;
-    GLuint m_shader;
+
 public:
     Drawable() = delete;
     Drawable(Model*, GLuint,float, float, float);
@@ -134,10 +139,9 @@ public:
 };
 
 Drawable::Drawable(Model* model, GLuint shader,float x, float y, float z)
+    : m_shader(shader), m_model(model)
 {
     memset(m_transformation, 0, 16);
-    m_shader = shader;
-    m_model = model;
     m_transformation[0] = m_transformation[5] = m_transformation[10] = m_transformation[15] = 1;
     m_transformation[12]+= x;
     m_transformation[13]+= y;
@@ -161,8 +165,8 @@ void Drawable::Translate(float x, float y, float z)
 class Drawer //pun intended CD
 {
 private:
-    static std::vector <Model*> model;
-    static std::vector <Drawable*> drawable;
+    static std::vector <std::unique_ptr<Model> > model;
+    static std::vector <std::unique_ptr<Drawable> > drawable;
     static GLuint shaders, cameraUniform, perspectiveUniform;
     static float camera[16], perspective[16];
 public:
@@ -171,20 +175,19 @@ public:
     static void AddModel(std::vector<Vertex>, const char*);
     static void AddDrawable(int i, float x=0, float y=0, float z=0);
     static void MoveCamera(float x, float y, float z);
-    static Drawable* GetDrawable(int i) { return drawable[i];}
-    static Model* GetModel(int i) { return model[i];};
-    static GLuint GetShaders() { return shaders;};
+    static Drawable* GetDrawable(int i) { return drawable[i].get();}
+    static Model* GetModel(int i) { return model[i].get();}
+    static GLuint GetShaders() { return shaders;}
 };
-
 
 void Drawer::AddDrawable(int i, float x, float y, float z)
 {
-    drawable.push_back(new Drawable(model[i], shaders,x,y,z));
-};
+    drawable.push_back(std::move(std::unique_ptr<Drawable>(new Drawable(model[i].get(), shaders,x,y,z))));
+}
 
 void Drawer::AddModel(std::vector<Vertex> v, const char* filename)
 {
-    model.push_back(new Model(v, shaders, filename));
+    model.push_back(std::move(std::unique_ptr<Model>(new Model(v, shaders, filename))));
 }
 
 void Drawer::Init()
@@ -234,8 +237,8 @@ void Drawer::Draw()
     glutPostRedisplay();
 }
 GLuint Drawer::shaders, Drawer::cameraUniform, Drawer::perspectiveUniform = 0;
-std::vector <Model*> Drawer::model;
-std::vector <Drawable*> Drawer::drawable;
+std::vector <std::unique_ptr<Model> > Drawer::model;
+std::vector <std::unique_ptr<Drawable> > Drawer::drawable;
 float Drawer::camera[] = {1.0, 0.0, 0.0, 0.0,
                           0.0, 1.0, 0.0, 0.0,
                           0.0, 0.0, 1.0, 0.0,
@@ -244,7 +247,6 @@ float Drawer::perspective[] = {0.0, 0.0, 0.0, 0.0,
                                0.0, 0.0, 0.0, 0.0,
                                0.0, 0.0, 0.0, 0.0,
                                0.0, 0.0, 0.0, 0.0};
-
 
 class System
 {
