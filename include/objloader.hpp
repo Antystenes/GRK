@@ -8,6 +8,22 @@
 #include <sstream>
 #include <iostream>
 
+
+struct Vertex
+{
+    float x;
+    float y;
+    float z;
+
+    float u;
+    float v;
+
+    Vertex(float fx, float fy, float fz, float fu, float fv) //TODO: Replace Vertex with builtins
+        : x(fx), y(fy), z(fz), u(fu), v(fv) {};
+    ~Vertex() = default;
+};
+
+
 class OBJLoader
 {
    static void LoadVertex(std::vector<glm::vec3>& vec, std::stringstream& strm)
@@ -18,6 +34,7 @@ class OBJLoader
       strm >> vertex.z;
       vec.push_back(vertex);
    }
+
    static void LoadUV(std::vector<glm::vec2>& vec, std::stringstream& strm)
    {
       glm::vec2 uv;
@@ -81,10 +98,7 @@ class OBJLoader
    }
 
 public:
-   static bool LoadOBJFromFile(std::string filepath,
-                               std::vector<glm::vec3>& out_vertices,
-                               std::vector<glm::vec2>& out_uvs,
-                               std::vector<glm::vec3>& out_normal)
+    static bool LoadOBJFromFile(std::string filepath,std::vector<Vertex>& dest)
    {
       std::ifstream objFile(filepath);
       if(!objFile.is_open())
@@ -99,6 +113,11 @@ public:
       std::vector<glm::vec3> temp_out_vertices;
       std::vector<glm::vec2> temp_out_uvs;
       std::vector<glm::vec3> temp_out_normal;
+
+
+      std::vector<glm::vec3> out_vertices;
+      std::vector<glm::vec2> out_uvs;
+      std::vector<glm::vec3> out_normal;
 
       std::string line;
       std::string token;
@@ -117,16 +136,22 @@ public:
       IndexData(vertexIndices, uvIndices, normalIndices,
                 temp_out_vertices, temp_out_uvs, temp_out_normal,
                 out_vertices, out_uvs, out_normal);
+      for(unsigned int i = 0; i<out_vertices.size(); i++ )
+      {
+
+          dest.push_back(Vertex(out_vertices[i].x, out_vertices[i].y, out_vertices[i].z, out_uvs[i].x, out_uvs[i].y));
+      }
+
       return true;
    }
 
-    static bool LoadOBJ(std::string filepath, std::vector<glm::vec3> vertices)
+/*    static bool LoadOBJ(std::string filepath, std::vector<glm::vec3> vertices)
    {
       std::vector<glm::vec2> uvs;
       std::vector<glm::vec3> normal;
       bool status = LoadOBJFromFile(filepath, vertices, uvs, normal);
       return status;
-   }
+      }*/
 };
 
 //http://www.opengl-tutorial.org/beginners-tutorials/tutorial-7-model-loading/

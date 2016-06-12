@@ -20,9 +20,8 @@ System::System(int argc, char** argv)
     ilutInit();
     ilutRenderer(ILUT_OPENGL);
     Drawer::AddModel("media/tubarao1.obj", "media/DRAGON.BMP");
-    for(int i = -10; i<10; i++)
-        for(int j = -10; j<10; j++)
-            Drawer::AddDrawable(1, 0.5*j, -1, 0.5*i);
+    Drawer::AddDrawable(0, 1500, -2000, -6000);
+    Drawer::AddDrawable(0, -1500, -2000, -6000);
     glutDisplayFunc(Drawer::Draw);
     glutKeyboardFunc(Keyboard);
     glutMainLoop();

@@ -6,9 +6,9 @@
 GLuint Drawer::shaders, Drawer::cameraUniform, Drawer::perspectiveUniform = 0;
 std::vector <std::unique_ptr<Model> > Drawer::model;
 std::vector <std::unique_ptr<Drawable> > Drawer::drawable;
-float Drawer::camera[] = {1.0, 0.0, 0.0, 0.0,
-                          0.0, 1.0, 0.0, 0.0,
-                          0.0, 0.0, 1.0, 0.0,
+float Drawer::camera[] = {0.0001, 0.0, 0.0, 0.0,
+                          0.0, 0.0001, 0.0, 0.0,
+                          0.0, 0.0, 0.0001, 0.0,
                           0.0, 0.0, 0.0, 1.0};
 float Drawer::perspective[] = {0.0, 0.0, 0.0, 0.0,
                                0.0, 0.0, 0.0, 0.0,
