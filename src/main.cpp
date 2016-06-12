@@ -48,7 +48,7 @@ private:
     GLuint m_shader, m_vbo, m_vao, m_vaotex, texture, texUniform;
 public:
     Model() = delete;
-    Model(std::vector<Vertex>, GLuint);
+    Model(std::vector<Vertex>, GLuint, const char*);
     ~Model() = default;
     void Draw();
     static GLuint LoadImage(const char*);
@@ -62,35 +62,31 @@ GLuint Model::LoadImage(const char* filename)
     ilBindImage(imageID);
     ilLoadImage(filename);
     ilConvertImage(IL_RGB, IL_UNSIGNED_BYTE);
-    // Generate a new texture
+
     glGenTextures(1, &textureID);
 
-    // Bind the texture to a name
     glBindTexture(GL_TEXTURE_2D, textureID);
 
-    // Set texture clamping method
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-    // Set texture interpolation method to use linear interpolation (no MIPMAPS)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-    // Specify the texture specification
-    glTexImage2D(GL_TEXTURE_2D, 				// Type of texture
-                 0,				// Pyramid level (for mip-mapping) - 0 is the top level
-                 ilGetInteger(IL_IMAGE_FORMAT),	// Internal pixel format to use. Can be a generic type like GL_RGB or GL_RGBA, or a sized type
-                 ilGetInteger(IL_IMAGE_WIDTH),	// Image width
-                 ilGetInteger(IL_IMAGE_HEIGHT),	// Image height
-                 0,				// Border width in pixels (can either be 1 or 0)
-                 ilGetInteger(IL_IMAGE_FORMAT),	// Format of image pixel data
-                 GL_UNSIGNED_BYTE,		// Image data type
-                 ilGetData());			// The actual image data itself
+    glTexImage2D(GL_TEXTURE_2D,
+                 0,
+                 ilGetInteger(IL_IMAGE_FORMAT),
+                 ilGetInteger(IL_IMAGE_WIDTH),
+                 ilGetInteger(IL_IMAGE_HEIGHT),
+                 0,
+                 ilGetInteger(IL_IMAGE_FORMAT),
+                 GL_UNSIGNED_BYTE,
+                 ilGetData());
     ilDeleteImages(1, &imageID);
     return textureID;
 }
 
-Model::Model(std::vector<Vertex> v, GLuint shader)
+Model::Model(std::vector<Vertex> v, GLuint shader, const char* filename)
 {
     m_shader=shader;
     m_vertexData = v;
@@ -104,7 +100,7 @@ Model::Model(std::vector<Vertex> v, GLuint shader)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*) (3*sizeof(float)));
-    texture = LoadImage("media/DRAGON.BMP");
+    texture = LoadImage(filename);
     texUniform = glGetUniformLocation(m_shader, "text");
 }
 
@@ -169,7 +165,7 @@ private:
 public:
     static void Init();
     static void Draw();
-    static void AddModel(std::vector<Vertex>);
+    static void AddModel(std::vector<Vertex>, const char*);
     static void AddDrawable(int i, float x=0, float y=0, float z=0);
     static void MoveCamera(float x, float y, float z);
     static Drawable* GetDrawable(int i) { return drawable[i];}
@@ -183,9 +179,9 @@ void Drawer::AddDrawable(int i, float x, float y, float z)
     drawable.push_back(new Drawable(model[i], shaders,x,y,z));
 };
 
-void Drawer::AddModel(std::vector<Vertex> v)
+void Drawer::AddModel(std::vector<Vertex> v, const char* filename)
 {
-    model.push_back(new Model(v, shaders));
+    model.push_back(new Model(v, shaders, filename));
 }
 
 void Drawer::Init()
@@ -282,14 +278,14 @@ System::System(int argc, char** argv)
                                    Vertex( 0.0f, 0.3f, 0.0f, 0.5f, 0.75f),
                                    Vertex( 0.05f, 0.4f, 0.0f, 0.75f, 1.0f)
     };
-    Drawer::AddModel(trojkat);
+    Drawer::AddModel(trojkat, "media/DRAGON.BMP");
     std::vector<Vertex> tile = {Vertex( 0.0f, 0.0f, 0.0f, 0.0f, 1.0f),
                                 Vertex( 0.5f, 0.0f, 0.0f, 1.0f, 1.0f),
                                 Vertex( 0.5f, 0.0f, 0.5f, 1.0f, 0.0f),
                                 Vertex( 0.5f, 0.0f, 0.5f, 1.0f, 0.0f),
                                 Vertex( 0.0f, 0.0f, 0.5f, 0.0f, 0.0f),
                                 Vertex( 0.0f, 0.0f, 0.0f, 0.0f, 1.0f)};
-    Drawer::AddModel(tile);
+    Drawer::AddModel(tile, "media/Ocean Floor.jpg");
     Drawer::AddDrawable(0, 0, 0 ,-2);
     for(int i = -10; i<10; i++)
         for(int j = -10; j<10; j++)
