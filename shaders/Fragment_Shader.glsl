@@ -1,9 +1,8 @@
-
 #version 430 core
 
 out vec3 color;
 in vec2 texcoord;
-in vec2 noise;
+//in vec2 noise;
 in float f;
 uniform sampler2D text;
 in vec3 vnormal;

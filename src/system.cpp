@@ -20,6 +20,7 @@ System::System(int argc, char** argv)
     ilutInit();
     ilutRenderer(ILUT_OPENGL);
     Drawer::AddModel("media/tubarao1.obj", "media/Ocean Floor.jpg");
+//    Drawer::AddModel("media/tubarao1.obj", "media/tubarao1.jpg");
     Drawer::AddDrawable(0, 1500, -2000, -6000);
     Drawer::AddDrawable(0, -1500, -2000, -6000);
     glutDisplayFunc(Drawer::Draw);

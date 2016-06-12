@@ -132,16 +132,19 @@ public:
          ss >> token;
          if(token == "#") continue;
          else if (token == "s") continue;
-         else if (token == "v") LoadVertex(temp_out_vertices, ss);
+         else if (token == "v")  LoadVertex(temp_out_vertices, ss);
          else if (token == "vt") LoadUV(temp_out_uvs, ss);
          else if (token == "vn") LoadNormal(temp_out_normal, ss);
-         else if (token == "f") LoadFace(vertexIndices, uvIndices, normalIndices, ss);
+         else if (token == "f")  LoadFace(vertexIndices, uvIndices, normalIndices, ss);
       }
+
       IndexData(vertexIndices, uvIndices, normalIndices,
                 temp_out_vertices, temp_out_uvs, temp_out_normal,
                 out_vertices, out_uvs, out_normal);
-      for(unsigned int i = 0; i<out_vertices.size(); i++ )
+
+      for(unsigned int i = 0; i < out_vertices.size(); i++)
       {
+
 
           dest.push_back(Vertex(out_vertices[i].x, out_vertices[i].y, out_vertices[i].z, out_uvs[i].x, out_uvs[i].y, out_normal[i].x, out_normal[i].y, out_normal[i].z));
       }

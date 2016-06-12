@@ -10,20 +10,17 @@ float Drawer::camera[] = {0.0001, 0.0, 0.0, 0.0,
                           0.0, 0.0001, 0.0, 0.0,
                           0.0, 0.0, 0.0001, 0.0,
                           0.0, 0.0, 0.0, 1.0};
-float Drawer::perspective[] = {0.0, 0.0, 0.0, 0.0,
-                               0.0, 0.0, 0.0, 0.0,
-                               0.0, 0.0, 0.0, 0.0,
-                               0.0, 0.0, 0.0, 0.0};
+float Drawer::perspective[];
 
 
 void Drawer::AddDrawable(int i, float x, float y, float z)
 {
-    drawable.push_back(std::move(std::unique_ptr<Drawable>(new Drawable(model[i].get(), shaders,x,y,z))));
+    drawable.emplace_back(new Drawable(model[i].get(), shaders,x,y,z));
 }
 
 void Drawer::AddModel(std::string v, const char* filename)
 {
-    model.push_back(std::move(std::unique_ptr<Model>(new Model(v, shaders, filename))));
+    model.emplace_back(new Model(v, shaders, filename));
 }
 
 void Drawer::Init()
@@ -32,6 +29,9 @@ void Drawer::Init()
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LEQUAL);
     glDepthRange(0.0f, 1.0f);
+    //glEnable(GL_CULL_FACE);
+    //glCullFace(GL_BACK);
+    //glFrontFace(GL_CW);
     shaders = LoadShader(Configuration::Get().GetElement("vertex_path").c_str(),
                          Configuration::Get().GetElement("fragment_path").c_str());
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -40,7 +40,7 @@ void Drawer::Init()
     glUniformMatrix4fv(cameraUniform, 1, GL_FALSE, camera);
     perspectiveUniform = glGetUniformLocation(shaders,"perspective");
     float fzNear = 0.1f;
-    float fzFar = 30.0f;
+    float fzFar = 300.0f;
     perspective[0] = 1.0;
     perspective[5] = 1.0;
     perspective[10] = (fzFar + fzNear) / (fzNear-fzFar);

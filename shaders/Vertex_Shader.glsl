@@ -15,6 +15,7 @@ const vec4 light = vec4(10000.0, 5000.0, 0.0, 1.0);
 
 void main(void)
 {
+
 vec4 pos = camera * transformation * vec4(position, 1);
 f = exp(-0.6*length(pos));
 vL = normalize(pos - (camera * light)).rgb;
