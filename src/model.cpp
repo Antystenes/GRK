@@ -52,6 +52,8 @@ Model::Model(std::string model, GLuint shader, const char* filename)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*) (3*sizeof(float)));
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*) (5*sizeof(float)));
     texture = LoadImage(filename);
     texUniform = glGetUniformLocation(m_shader, "text");
     std::cout << m_vertexData.size() << std::endl;

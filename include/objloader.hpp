@@ -18,8 +18,12 @@ struct Vertex
     float u;
     float v;
 
-    Vertex(float fx, float fy, float fz, float fu, float fv) //TODO: Replace Vertex with builtins
-        : x(fx), y(fy), z(fz), u(fu), v(fv) {};
+    float nx;
+    float ny;
+    float nz;
+
+    Vertex(float fx, float fy, float fz, float fu, float fv, float fnx, float fny, float fnz) //TODO: Replace Vertex with builtins
+        : x(fx), y(fy), z(fz), u(fu), v(fv), nx(fnx), ny(fny), nz(fnz) {};
     ~Vertex() = default;
 };
 
@@ -139,7 +143,7 @@ public:
       for(unsigned int i = 0; i<out_vertices.size(); i++ )
       {
 
-          dest.push_back(Vertex(out_vertices[i].x, out_vertices[i].y, out_vertices[i].z, out_uvs[i].x, out_uvs[i].y));
+          dest.push_back(Vertex(out_vertices[i].x, out_vertices[i].y, out_vertices[i].z, out_uvs[i].x, out_uvs[i].y, out_normal[i].x, out_normal[i].y, out_normal[i].z));
       }
 
       return true;
@@ -154,5 +158,4 @@ public:
       }*/
 };
 
-//http://www.opengl-tutorial.org/beginners-tutorials/tutorial-7-model-loading/
 #endif //OBJLOADER_HPP
