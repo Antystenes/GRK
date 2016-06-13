@@ -43,11 +43,6 @@ void Drawer::Init()
                          Configuration::Get().GetElement("fragment_path").c_str());
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glUseProgram(shaders);
-    float camPos[] = {camera[12],
-                      camera[13],
-                      camera[14]};
-    cameraUniform = glGetUniformLocation(shaders, "camPos");
-    glUniform3fv(cameraUniform, 3, camPos);
     cameraUniform = glGetUniformLocation(shaders, "camera");
     glUniformMatrix4fv(cameraUniform, 1, GL_FALSE, camera);
     perspectiveUniform = glGetUniformLocation(shaders,"perspective");
@@ -66,9 +61,22 @@ void Drawer::MoveCamera(float x, float y, float z)
     camera[12]-=x;
     camera[13]-=y;
     camera[14]-=z;
+    float camPos[] = {camera[12],
+                      camera[13],
+                      camera[14]};
     glUseProgram(shaders);
     glUniformMatrix4fv(cameraUniform, 1, GL_FALSE, camera);
+    static float t = 0;
+    t += 0.1;
+    int u = glGetUniformLocation(shaders, "camPos");
+    glUniform3fv(u, 3, camPos);
+
+    u = glGetUniformLocation(shaders, "t");
+    glUniform1fv(u, 1, &t);
     glUseProgram(sharkShaders);
+    u = glGetUniformLocation(sharkShaders, "camPos");
+    glUniform3fv(u, 3, camPos);
+
     glUniformMatrix4fv(cameraUniform, 1, GL_FALSE, camera);
 }
 

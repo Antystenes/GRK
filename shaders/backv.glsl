@@ -7,13 +7,16 @@ layout(location = 2) in vec3 normal;
 uniform mat4 transformation;
 uniform mat4 camera;
 uniform mat4 perspective;
+uniform vec3 camPos;
 out vec3 posWorld;
 out vec3 texcoord;
 out vec3 vnormal;
 out vec3 ray;
+out vec3 _camPos;
 
 void main(void)
 {
+    _camPos = camPos;
     //texcoord = vec2(1.0) - tex;
     vnormal = normal;
     posWorld = (camera * transformation * vec4(position, 1)).xyz;
