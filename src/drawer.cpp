@@ -1,3 +1,4 @@
+#include <cmath>
 #include "drawer.hpp"
 #include "configuration.hpp"
 #include "myShader.hpp"
@@ -84,7 +85,7 @@ void Drawer::Draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     static float t = 0;
     t += 0.1;
-
+    GetDrawable(2)->Translate(0,100* sin(t), 0);
     float camPos[] = {camera[12],
                       camera[13],
                       camera[14]};
