@@ -17,7 +17,7 @@ void main(void)
     texcoord = vec2(1.0) - tex;
     vnormal = normal;
     vec3 ppp = position;
-    ppp.x += 500*sin(0.002*ppp.z + t*1000);
+    ppp.x += 300*sin(0.001*ppp.z + t*1000);
     posWorld = (camera * transformation * vec4(position, 1)).xyz;
     gl_Position = perspective * camera * transformation * vec4(ppp, 1);
 }
