@@ -5,7 +5,7 @@ Drawable::Drawable(Model* model, GLuint shader,float x, float y, float z)
     : m_shader(shader), m_model(model)
 {
     m_transformation = glm::mat4(1.0);
-    m_transformation[3] = glm::vec4(x, y, z, 1);
+    m_transformation[3] += glm::vec4(x, y, z, 1);
     m_transformationUniform = glGetUniformLocation(shader, "transformation");
 }
 

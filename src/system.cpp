@@ -32,7 +32,7 @@ System::System(int argc, char** argv)
     Drawer::AddDrawable(1, 1500, -2000, -6000);
     Drawer::AddDrawable(1, 1500, -2000, -6000);
     Drawer::AddDrawable(0, 0, 0, 0);
-
+//    Drawer::MoveCamera(0, -2, 2);
     glutDisplayFunc(Drawer::Draw);
     glutKeyboardFunc(Keyboard);
     glutMainLoop();
