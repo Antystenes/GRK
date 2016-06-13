@@ -3,7 +3,7 @@
 #include "myShader.hpp"
 
 
-GLuint Drawer::shaders, Drawer::cameraUniform, Drawer::sharkShaders, Drawer::perspectiveUniform = 0;
+GLuint Drawer::shaders, Drawer::cameraUniform, Drawer::sharkShaders, Drawer::lightUniform, Drawer::perspectiveUniform = 0;
 std::vector <std::unique_ptr<Model> > Drawer::model;
 std::vector <std::unique_ptr<Drawable> > Drawer::drawable;
 float Drawer::camera[] = {0.0001, 0.0, 0.0, 0.0,
@@ -11,6 +11,7 @@ float Drawer::camera[] = {0.0001, 0.0, 0.0, 0.0,
                           0.0, 0.0, 0.0001, 0.0,
                           0.0, 0.0, 0.0, 1.0};
 float Drawer::perspective[];
+float Drawer::light[] = {1000, 10000, 0.0, 1.0};
 
 
 void Drawer::AddDrawable(int i, float x, float y, float z)
@@ -54,6 +55,9 @@ void Drawer::Init()
     perspective[14] = (2 * fzFar * fzNear) / (fzNear-fzFar);
     perspective[11] = -1.0f;
     glUniformMatrix4fv(perspectiveUniform, 1, GL_FALSE, perspective);
+    lightUniform = glGetUniformLocation(shaders, "light");
+    glUniform4fv(lightUniform, 1, light);
+
 }
 
 void Drawer::MoveCamera(float x, float y, float z)
@@ -61,13 +65,30 @@ void Drawer::MoveCamera(float x, float y, float z)
     camera[12]-=x;
     camera[13]-=y;
     camera[14]-=z;
+    glUseProgram(shaders);
+    glUniformMatrix4fv(cameraUniform, 1, GL_FALSE, camera);
+}
+
+void Drawer::MoveLight(float x, float y, float z)
+{
+    light[0]+=x;
+    light[1]+=y;
+    light[2]+=z;
+    glUseProgram(shaders);
+    glUniform4fv(lightUniform, 1, light);
+}
+
+void Drawer::Draw()
+{
+    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    static float t = 0;
+    t += 0.1;
+
     float camPos[] = {camera[12],
                       camera[13],
                       camera[14]};
     glUseProgram(shaders);
-    glUniformMatrix4fv(cameraUniform, 1, GL_FALSE, camera);
-    static float t = 0;
-    t += 0.1;
     int u = glGetUniformLocation(shaders, "camPos");
     glUniform3fv(u, 3, camPos);
 
@@ -77,13 +98,6 @@ void Drawer::MoveCamera(float x, float y, float z)
     u = glGetUniformLocation(sharkShaders, "camPos");
     glUniform3fv(u, 3, camPos);
 
-    glUniformMatrix4fv(cameraUniform, 1, GL_FALSE, camera);
-}
-
-void Drawer::Draw()
-{
-    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     for(auto &i : drawable)
     {
         i->Draw();

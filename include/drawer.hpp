@@ -11,8 +11,8 @@ class Drawer //pun indented XD
 private:
     static std::vector <std::unique_ptr<Model> > model;
     static std::vector <std::unique_ptr<Drawable> > drawable;
-    static GLuint shaders, cameraUniform, perspectiveUniform,sharkShaders;
-    static float camera[16], perspective[16];
+    static GLuint shaders, cameraUniform, perspectiveUniform, lightUniform, sharkShaders;
+    static float camera[16], perspective[16], light[4];
 public:
     static void Init();
     static void Draw();
@@ -23,5 +23,6 @@ public:
     static Drawable* GetDrawable(int i) { return drawable[i].get();}
     static Model* GetModel(int i) { return model[i].get();}
     static GLuint GetShaders() { return shaders;}
+    static void MoveLight(float x, float y, float z);
 };
 #endif //DRAWER_HPP

@@ -19,7 +19,6 @@ System::System(int argc, char** argv)
     iluInit();
     ilutInit();
     ilutRenderer(ILUT_OPENGL);
-    //Drawer::AddModel("media/tubarao1.obj", "media/Ocean Floor.jpg");
     Drawer::AddModel(
         std::vector<float>{-1.0, -1.0 ,0.5,
                 1.0, -1.0, 0.99,
@@ -66,16 +65,28 @@ void System::Keyboard(unsigned char key, int x, int y)
        Drawer::MoveCamera(0.0, 0.0,-0.1);
        break;
    case 'i':
-       Drawer::GetDrawable(0)->Translate(0.0, 0.02, 0.0);
+       Drawer::GetDrawable(1)->Translate(0.0, 200, 0.0);
        break;
    case 'k':
-       Drawer::GetDrawable(0)->Translate(0.0,-0.02, 0.0);
+       Drawer::GetDrawable(1)->Translate(0.0,-200, 0.0);
        break;
    case 'j':
-       Drawer::GetDrawable(0)->Translate(-0.02, 0.0, 0.0);
+       Drawer::GetDrawable(1)->Translate(-200, 0.0, 0.0);
        break;
    case 'l':
-       Drawer::GetDrawable(0)->Translate( 0.02, 0.0, 0.0);
+       Drawer::GetDrawable(1)->Translate( 200, 0.0, 0.0);
+       break;
+   case 'f':
+       Drawer::MoveLight(-200, 0, 0);
+       break;
+   case 'h':
+       Drawer::MoveLight(200, 0 , 0);
+       break;
+   case 't':
+       Drawer::MoveLight(0, 2000, 0);
+       break;
+   case 'g':
+       Drawer::MoveLight(0,-2000, 0);
        break;
    }
 }
