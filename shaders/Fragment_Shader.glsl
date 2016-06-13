@@ -9,11 +9,10 @@ uniform vec3 camPos;
 uniform sampler2D text;
 uniform sampler2D g1;
 uniform sampler2D g2;
-const vec3 fogColor = vec3(0.0, 0.0, 0.5);
-
+const vec3 fogColor = vec3(0.1, 0.2, 0.35);
 void main(void)
 {
-    vec3 waterColor = vec3(0.1, 0.3, 0.6);
+    vec3 waterColor = vec3(0.1, 0.2, 0.35);
     float fog = 1.0 - 1.0 / (1.0 + 2.0*length(posWorld));
     color = texture(text, texcoord).rgb;
     color = mix(color, waterColor, fog);
