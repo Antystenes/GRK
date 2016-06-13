@@ -22,7 +22,7 @@ struct Vertex
     float ny;
     float nz;
 
-    Vertex(float fx, float fy, float fz, float fu, float fv, float fnx, float fny, float fnz) //TODO: Replace Vertex with builtins
+    Vertex(float fx, float fy, float fz, float fu = 0.0, float fv = 0.0, float fnx = 0.0, float fny = 0.0, float fnz = 0.0) //TODO: Replace Vertex with builtins
         : x(fx), y(fy), z(fz), u(fu), v(fv), nx(fnx), ny(fny), nz(fnz) {};
     ~Vertex() = default;
 };
@@ -130,8 +130,8 @@ public:
          std::stringstream ss;
          ss << line;
          ss >> token;
-         if(token == "#") continue;
-         else if (token == "s") continue;
+         if(token == "#")        continue;
+         else if (token == "s")  continue;
          else if (token == "v")  LoadVertex(temp_out_vertices, ss);
          else if (token == "vt") LoadUV(temp_out_uvs, ss);
          else if (token == "vn") LoadNormal(temp_out_normal, ss);

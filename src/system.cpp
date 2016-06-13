@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "drawer.hpp"
-
+#include "configuration.hpp"
 
 System::System(int argc, char** argv)
 {
@@ -19,10 +19,21 @@ System::System(int argc, char** argv)
     iluInit();
     ilutInit();
     ilutRenderer(ILUT_OPENGL);
-    Drawer::AddModel("media/tubarao1.obj", "media/Ocean Floor.jpg");
-//    Drawer::AddModel("media/tubarao1.obj", "media/tubarao1.jpg");
-    Drawer::AddDrawable(0, 1500, -2000, -6000);
-    Drawer::AddDrawable(0, -1500, -2000, -6000);
+    //Drawer::AddModel("media/tubarao1.obj", "media/Ocean Floor.jpg");
+    Drawer::AddModel(
+        std::vector<float>{-1.0, -1.0 ,0.5,
+                1.0, -1.0, 0.99,
+                -1.0, 1.0, 0.99,
+                1.0, -1.0, 0.99,
+                1.0, 1.0, 0.99,
+                -1.0, 1.0, 0.99},
+        CONF_GET("g1"));
+    Drawer::AddModel(CONF_GET("fish_obj"),
+                     CONF_GET("fish_texture"));
+    Drawer::AddDrawable(1, 1500, -2000, -6000);
+    Drawer::AddDrawable(1, 1500, -2000, -6000);
+    Drawer::AddDrawable(0, 0, 0, 0);
+
     glutDisplayFunc(Drawer::Draw);
     glutKeyboardFunc(Keyboard);
     glutMainLoop();

@@ -8,13 +8,15 @@ uniform mat4 transformation;
 uniform mat4 camera;
 uniform mat4 perspective;
 out vec3 posWorld;
-out vec2 texcoord;
+out vec3 texcoord;
 out vec3 vnormal;
+out vec3 ray;
 
 void main(void)
 {
-    texcoord = vec2(1.0) - tex;
+    //texcoord = vec2(1.0) - tex;
     vnormal = normal;
     posWorld = (camera * transformation * vec4(position, 1)).xyz;
-    gl_Position = perspective * camera * transformation * vec4(position, 1);
+    texcoord = position;
+    gl_Position = vec4(position, 1);
 }

@@ -1,15 +1,20 @@
 #version 430 core
 
 out vec3 color;
+in vec3 posWorld;
+in vec3 vnormal;
 in vec2 texcoord;
 //in vec2 noise;
-in float f;
+uniform vec3 camPos;
 uniform sampler2D text;
-in vec3 vnormal;
-in vec3 vL;
-const vec3 fog = vec3(0.0, 0.0, 0.5);
+uniform sampler2D g1;
+uniform sampler2D g2;
+const vec3 fogColor = vec3(0.0, 0.0, 0.5);
 
 void main(void)
 {
-color = (f * texture(text, texcoord).rgb + (1-f) * fog) * max (dot(vnormal, vL),0);
+    vec3 waterColor = vec3(0.1, 0.3, 0.6);
+    float fog = 1.0 - 1.0 / (1.0 + 2.0*length(posWorld));
+    color = texture(text, texcoord).rgb;
+    color = mix(color, waterColor, fog);
 }

@@ -47,4 +47,6 @@ public:
    }
 };
 
+#define CONF_GET(x) Configuration::Get().GetElement(x).c_str()
+
 #endif //CONFIGURATION_HPP_DEFINED
